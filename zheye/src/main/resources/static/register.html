@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        .detail p {
+            width: 100%;
+            font-size: 14px;
+            color: #353535;
+            text-indent: 28px;
+            padding-bottom: 10px;
+            line-height: 30px;
+            padding: 5px 0;
+        }
+
+        #tabRegister .td1 {
+            width: 37%;
+            text-align: right;
+            font-size: 16px;
+        }
+
+        /*注册委员*/
+        #tabRegister .td2 {
+            text-align: left;
+        }
+
+        #tabRegister .textInput {
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 5px;
+            border-color: #0094ff;
+            height: 25px;
+            width: 450px
+        }
+
+        #tabRegister .trHight {
+            height: 50px;
+            line-height: 50px;
+        }
+
+        h3 {
+            text-align: center;
+            font-size: 3em;
+            color: #0055aa;
+            margin-bottom: 30px;
+        }
+
+        .login-button {
+            position: relative;
+            margin-top: 20px;
+            display: block;
+            width: 40%;
+            padding: 15px;
+            background-color: #29adeb;
+            background-repeat: repeat-y;
+            background-image: -moz-linear-gradient(left, #29adeb, #177ce3);
+            background-image: -webkit-linear-gradient(left, #29adeb, #177ce3);
+            background-image: -o-linear-gradient(left, #29adeb, #177ce3);
+            background-image: linear-gradient(left, #29adeb, #177ce3);
+            box-shadow: 0px 7px 10px 0px rgba(23, 124, 227, 0.25);
+            text-align: center;
+            border-radius: 3px;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: padding-right .4s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div class="width100 marT15 content_news_list">
+    <div class="width96 mauto">
+        <div class="width100">
+            <h3>论坛注册</h3>
+            <form  name="myform" action="" method="post">
+            <table style="width:100%"  id="tabRegister">
+                <tr class="trHight">
+                    <td class="td1" >
+                        用户名：
+                    </td><!--用户名信息验证-->
+                    <td class="td2"><input type="text" name="uname" class="textInput" onblur="checkUname()">
+                        <span id="span_userTip" style="color:#f00;display:inline-block;">*</span>
+                    </td><!--用户名信息验证-->
+                </tr>
+
+                <tr class="trHight">
+                    <td class="td1">
+                        姓名：
+                    </td><!--姓名信息验证-->
+                    <td class="td2"><input type="text" name="name" class="textInput" />
+                        <span style="color:#ff0000">*</span>
+                        <span id="span_nameTip" style="color:#ff0000;display:none;"></span>
+                    </td><!--姓名信息验证-->
+                </tr>
+                <tr class="trHight">
+                    <td class="td1">
+                        密码：
+                    </td><!--密码信息验证-->
+                    <td class="td2"><input type="password" name="password1" id="pass1" class="textInput" onblur="checkPassword1()">
+                        <span style="color:#f00">*</span>
+                        <span id="span_PasswordTip" style="color:#f00;display:none;"></span>
+                    </td><!--密码信息验证-->
+                </tr>
+                <tr class="trHight">
+                    <td class="td1">
+                        确认密码：
+                    </td><!--确认密码信息验证-->
+                    <td class="td2"><input type="password" name="password2" id="pass2" class="textInput" onblur="checkPassword2()">
+                        <span style="color:#f00">*</span>
+                        <span id="span_ConfirmPasswordTip" style="color:#f00;display:none;"></span>
+                    </td><!--确认密码信息验证-->
+                </tr>
+                <tr class="trHight">
+                    <td class="td1">
+                        手机号码：
+                    </td><!--手机号码-->
+                    <td class="td2"><input type="text" name="phone" class="textInput" onblur="checkNumber()"/>
+                        <span style="color:#f00">*</span>
+                        <span id="span_tel" style="color:#f00;display:none;"></span>
+                    </td><!--手机号码-->
+                </tr>
+                <tr style="height:70px;line-height:70px;">
+                    <td class="td1">
+                    </td>
+                    <td class="td2" style="padding-top :10px; ">
+                        <button type="button" class="login-button">注册<i class="ai ai-enter"></i></button>
+                    </td>
+                </tr>
+            </table>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="jquery/jquery2.1.4.js"></script>
+<script src="layer/layer.js"></script>
+<script>
+    function checkUname() {
+        var uname = document.myform.uname.value;
+        console.log(uname)
+        if (uname.match(/^[0-9A-Za-z_]{3,18}$/) == null) {
+            console.log(uname.match(/^[0-9A-Za-z_]{6,18}$/))
+            layer.msg("请输入3-18位正确字符")
+        }
+    }
+
+    function checkPassword1() {
+        var password = document.myform.password1.value;
+
+        if (password.match(/^\S{6,18}$/) == null) {
+            console.log(password.match(/^\S{6,18}$/));
+            layer.msg("请输入6-18位的规范字符")
+        }
+        checkPassword2();
+    }
+
+    function checkPassword2() {
+        var password1 = document.myform.password1.value;
+        var password2 = document.myform.password2.value;
+
+        if (password1 != password2 || password2.match(/^\S{6,18}$/) == null) {
+            layer.msg("两次输入密码不一样")
+        }
+    }
+
+    function checkSex() {
+        document.getElementById("alertSex").style.display = "none";
+    }
+
+    function checkNumber(){
+        var number = document.myform.phone.value
+        if(number.match(/(^1)([0-9]{10}$)/) == null){
+            layer.msg("请输入正确的手机号")
+        }
+    }
+</script>
+</body>
+</html>
