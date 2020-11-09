@@ -60,7 +60,7 @@ public class User implements UserDetails{
     @Column(name = "userstatement")
     private String userStatement; // 用户个人说明
 
-    @ManyToOne(optional = false,cascade = {CascadeType.MERGE,CascadeType.REFRESH})
+    @ManyToOne(optional = false)
     @JoinColumn(name = "userTypeID")
     private UserType type;
     public User(String username,String password,String phone){

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 
-@Transactional
 public interface UserTypeRepository extends CrudRepository<UserType,Long> {
     UserType findByUserTypeName(String name);
 }

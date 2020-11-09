@@ -1,6 +1,6 @@
 package a7.zheye.security;
 
-import a7.zheye.pojo.RespBean;
+import a7.zheye.pojo.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +9,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -37,8 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http    // 拦截、过滤请求 除了登录、注册页面其他不允许访问
                 .authorizeRequests()
-                .antMatchers("/register").permitAll()
-                .antMatchers("/www").permitAll()
+                .antMatchers("/register.html").permitAll()
+                .antMatchers("/register.do").permitAll()
+                .antMatchers("/login.html").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 //设置登录页面和登录接口
@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(new AuthenticationSuccessHandler() {
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
-                        RespBean ok = RespBean.ok("登录成功！",authentication.getPrincipal());
+                        Result ok = Result.ok("登录成功！",authentication.getPrincipal());
                         resp.setContentType("application/json;charset=utf-8");
                         PrintWriter out = resp.getWriter();
                         out.write(new ObjectMapper().writeValueAsString(ok));
@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureHandler(new AuthenticationFailureHandler() {
                     @Override
                     public void onAuthenticationFailure(HttpServletRequest req, HttpServletResponse resp, AuthenticationException e) throws IOException, ServletException {
-                        RespBean error = RespBean.error("登录失败");
+                        Result error = Result.error("登录失败");
                         resp.setContentType("application/json;charset=utf-8");
                         PrintWriter out = resp.getWriter();
                         out.write(new ObjectMapper().writeValueAsString(error));
@@ -76,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(new LogoutSuccessHandler() {
                     @Override
                     public void onLogoutSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
-                        RespBean ok = RespBean.ok("注销成功！");
+                        Result ok = Result.ok("注销成功！");
                         resp.setContentType("application/json;charset=utf-8");
                         PrintWriter out = resp.getWriter();
                         out.write(new ObjectMapper().writeValueAsString(ok));
@@ -92,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(new AccessDeniedHandler() {
                     @Override
                     public void handle(HttpServletRequest req, HttpServletResponse resp, AccessDeniedException e) throws IOException, ServletException {
-                        RespBean error = RespBean.error("权限不足，访问失败");
+                        Result error = Result.error("权限不足，访问失败");
                         resp.setStatus(403);
                         resp.setContentType("application/json;charset=utf-8");
                         PrintWriter out = resp.getWriter();
@@ -142,9 +142,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         //解决静态资源被拦截的问题
-        web.ignoring().antMatchers("/css/**");
-        web.ignoring().antMatchers("/layer/**");
-        web.ignoring().antMatchers("/jquery/**");
+        web.ignoring().antMatchers("../webapp/**");
     }
 }
 
