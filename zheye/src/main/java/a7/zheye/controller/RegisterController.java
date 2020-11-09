@@ -23,8 +23,15 @@ public class RegisterController {
     public String registerForm(){
         return "register.html";
     }
+
+    /**
+     * 处理用户注册
+     * @param userForm 前端传来的表单用户信息
+     * @return 注册后重定向到login页面
+     */
     @PostMapping
     public String processRegistraion( UserForm userForm){
+        // 将表单用户信息转换为User实体，并且加密，再存储到数据库
         User user=userForm.toUser(passwordEncoder);
         user.setType(userTypeRepository.findByUserTypeName("USER"));
         userRepository.save(user);

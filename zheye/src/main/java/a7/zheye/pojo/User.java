@@ -12,6 +12,9 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.*;
 
+/**
+ * 用户实体类
+ */
 @Entity
 @Data
 @NoArgsConstructor(force=true)

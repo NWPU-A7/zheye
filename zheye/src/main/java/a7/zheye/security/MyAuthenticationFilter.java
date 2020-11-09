@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * 实现从JSON取得username、password的自定义过滤器
+ * 从JSON取得username、password的自定义过滤器
  */
 public class MyAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Override

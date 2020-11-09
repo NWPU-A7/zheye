@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import a7.zheye.pojo.User;
 
-
+/**
+ * 提供基于JPA的自定义验证服务
+ */
 @Service
 public class UserService implements UserDetailsService {
   @Autowired

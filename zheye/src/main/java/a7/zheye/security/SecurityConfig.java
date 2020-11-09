@@ -35,13 +35,18 @@ import java.io.PrintWriter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http    // 拦截、过滤请求 除了登录、注册页面其他不允许访问
+                .authorizeRequests()
                 .antMatchers("/register").permitAll()
                 .antMatchers("/www").permitAll()
                 .anyRequest().authenticated()
                 .and()
+                //设置登录页面和登录接口
                 .formLogin()
                 .loginProcessingUrl("/login.do")
+                .loginPage("/login")
+                .permitAll()
+                // 处理登录成功、失败的消息返回
                 .successHandler(new AuthenticationSuccessHandler() {
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
@@ -64,9 +69,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         out.close();
                     }
                 })
-                .loginPage("/login")
-                .permitAll()
                 .and()
+                // 设置登出接口以及登出成功处理
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(new LogoutSuccessHandler() {
@@ -81,6 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     }
                 })
                 .and()
+                // 关闭csrf，以免影响ajax
                 .csrf()
                 .disable()
                 .exceptionHandling()
@@ -96,8 +101,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         out.close();
                     }
                 });
+        // 添加自定义过滤器
         http.addFilterAt(myAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+
+    /**
+     * 自定义过滤器bean
+     * @return
+     * @throws Exception
+     */
     @Bean
     MyAuthenticationFilter myAuthenticationFilter() throws Exception {
         MyAuthenticationFilter filter = new MyAuthenticationFilter();
@@ -106,10 +118,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Autowired
     UserService userService;
+
+    /**
+     * 密码加密bean
+     * @return
+     */
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    /**
+     * 基于userdetailservice提供的自定义验证
+     * @param auth
+     * @throws Exception
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth)
             throws Exception {

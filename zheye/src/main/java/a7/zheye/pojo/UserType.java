@@ -8,6 +8,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 用户类型实体类
+ */
 @Entity
 @Table(name="usertype")
 @NoArgsConstructor(force=true)

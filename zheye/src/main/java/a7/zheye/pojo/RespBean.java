@@ -1,5 +1,8 @@
 package a7.zheye.pojo;
 
+/**
+ * VO,视图对象，用来向前端传递消息
+ */
 public class RespBean {
     private Integer status;   //状态码
     private String msg;       //返回信息
