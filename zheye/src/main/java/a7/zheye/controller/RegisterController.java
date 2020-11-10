@@ -5,6 +5,7 @@ import a7.zheye.dao.UserTypeRepository;
 import a7.zheye.pojo.Result;
 import a7.zheye.pojo.User;
 import a7.zheye.pojo.UserForm;
+import a7.zheye.pojo.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -39,7 +40,11 @@ public class RegisterController {
                 return Result.error("用户名已存在，注册失败");
             }
             User user=userForm.toUser(passwordEncoder);
-            user.setType(userTypeRepository.findByUserTypeName("USER"));
+            UserType role=userTypeRepository.findByUserTypeName("USER");
+            if(role==null){
+                role=userTypeRepository.save(new UserType("USER"));
+            }
+            user.setType(role);
             userRepository.save(user);
             return Result.ok("注册成功");
         }catch (Exception e){
