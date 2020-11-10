@@ -39,40 +39,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/register.html").permitAll()
                 .antMatchers("/register.do").permitAll()
                 .antMatchers("/login.html").permitAll()
+                .antMatchers("/css/login.css").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 //设置登录页面和登录接口
                 .formLogin()
-                .loginProcessingUrl("/login.do")
-                .loginPage("/login")
+                .loginPage("/login.html")
                 .permitAll()
-                // 处理登录成功、失败的消息返回
-                .successHandler(new AuthenticationSuccessHandler() {
-                    @Override
-                    public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
-                        Result ok = Result.ok("登录成功！",authentication.getPrincipal());
-                        resp.setContentType("application/json;charset=utf-8");
-                        PrintWriter out = resp.getWriter();
-                        out.write(new ObjectMapper().writeValueAsString(ok));
-                        out.flush();
-                        out.close();
-                    }
-                })
-                .failureHandler(new AuthenticationFailureHandler() {
-                    @Override
-                    public void onAuthenticationFailure(HttpServletRequest req, HttpServletResponse resp, AuthenticationException e) throws IOException, ServletException {
-                        Result error = Result.error("登录失败");
-                        resp.setContentType("application/json;charset=utf-8");
-                        PrintWriter out = resp.getWriter();
-                        out.write(new ObjectMapper().writeValueAsString(error));
-                        out.flush();
-                        out.close();
-                    }
-                })
                 .and()
                 // 设置登出接口以及登出成功处理
                 .logout()
-                .logoutUrl("/logout")
+                .logoutUrl("/logout.do")
                 .logoutSuccessHandler(new LogoutSuccessHandler() {
                     @Override
                     public void onLogoutSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
@@ -101,12 +78,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         out.close();
                     }
                 });
-        // 添加自定义过滤器
         http.addFilterAt(myAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     /**
-     * 自定义过滤器bean
+     * 自定义验证用户密码过滤器
      * @return
      * @throws Exception
      */
@@ -114,6 +90,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     MyAuthenticationFilter myAuthenticationFilter() throws Exception {
         MyAuthenticationFilter filter = new MyAuthenticationFilter();
         filter.setAuthenticationManager(authenticationManagerBean());
+        // 添加登录成功处理器
+        filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler() {
+            @Override
+            public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
+                Result ok = Result.ok("登录成功！",authentication.getPrincipal());
+                resp.setContentType("application/json;charset=utf-8");
+                PrintWriter out = resp.getWriter();
+                out.write(new ObjectMapper().writeValueAsString(ok));
+                out.flush();
+                out.close();
+            }
+        });
+        // 添加登录失败处理器
+        filter.setAuthenticationFailureHandler(new AuthenticationFailureHandler() {
+            @Override
+            public void onAuthenticationFailure(HttpServletRequest req, HttpServletResponse resp, AuthenticationException e) throws IOException, ServletException {
+                Result error = Result.error("登录失败");
+                resp.setContentType("application/json;charset=utf-8");
+                PrintWriter out = resp.getWriter();
+                out.write(new ObjectMapper().writeValueAsString(error));
+                out.flush();
+                out.close();
+            }
+        });
+        // 设置登录接口
+        filter.setFilterProcessesUrl("/login.do");
         return filter;
     }
     @Autowired
@@ -143,6 +145,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         //解决静态资源被拦截的问题
         web.ignoring().antMatchers("../webapp/**");
+
     }
 }
 

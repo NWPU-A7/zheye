@@ -1,9 +1,11 @@
 package a7.zheye.pojo;
 
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -91,6 +93,7 @@ public class User implements UserDetails{
 
     @Override
     public String getPassword() {
+
         return password;
     }
 
