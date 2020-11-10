@@ -5,16 +5,12 @@ import a7.zheye.dao.UserTypeRepository;
 import a7.zheye.pojo.User;
 import a7.zheye.pojo.UserForm;
 import a7.zheye.pojo.UserType;
-import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.transaction.Transactional;
 
 @SpringBootTest(classes = ZheyeApplication.class)
 @RunWith(SpringRunner.class)
