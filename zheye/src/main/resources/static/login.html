@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="css/login.css" rel="stylesheet">
+    <title>论坛登录界面</title>
+</head>
+<body class="login-wrap">
+<div class="login-container">
+    <h3>论坛登录</h3>
+    <form class="login-form" action="index.html">
+        <div class="input-group">
+            <input type="text" id="username" class="input-field" placeholder="请输入用户名">
+
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" class="input-field" placeholder="请输入密码">
+
+        </div>
+        <button type="button" class="login-button">登录<i class="ai ai-enter" ></i></button>
+        <p class="text-muted text-center">
+            <a href="login.html"><small>忘记密码了？</small></a> | <a href="register.html"><small>注册一个新账号</small></a>
+        </p>
+    </form>
+</div>
+</body>
+<script src="jquery/jquery2.1.4.js"></script>
+<script src="layer/layer.js"></script>
+<script>
+
+    //按钮点击事件
+    $(".login-button").click(function () {
+        var username = $("#username").val();
+        //编写校验过程
+        if (username.length < 3) {
+            layer.msg("用户名长度不得少于3位");
+            return;
+        }
+        var password = $("#password").val();
+        if (password == null || password.length < 6) {
+            layer.msg("密码长度不得少于6位");
+            return;
+        }
+        //1.    先使用layer弹出load（提示加载中
+        var windowId = layer.load();
+        var data = {
+            "username": username,
+            "password": password
+        }
+        //2.    ajax与服务器交互
+        $.ajax({
+            url:"login.do",
+            data:JSON.stringify(data),
+            type:"POST",
+            contentType:"application/json",
+            dataType:"json",
+            traditional:true,
+            success:function (data){
+                layer.close(windowId);
+                layer.msg(data.result);
+                console.log(data.result);
+                if (data.status == 0) {
+                    //把用户名密码存储在session里面，首页显示用户名称
+                    localStorage.setItem("username",username);
+                    //跳转到主页
+                    location.assign("index.html");
+                } else {
+                    console.log(data.status);
+                    $("#password").val("");
+                }
+            }
+        })
+        /*$.post("login.do", {username: username, password: password}, function (data) {
+            //3.    关闭load窗口
+            layer.close(widowId);
+            //4.    将服务器回复的结果进行显示
+            layer.msg(data.result);
+            if (data.status == 0) {
+                //把用户名密码存储在session里面，首页显示用户名称
+                localStorage.setItem("username",username);
+                //跳转到主页
+                location.assign("index.html");
+            } else {
+                $("#password").val("");
+            }
+        }, "JSON");*/
+    });
+</script>
+</html>
